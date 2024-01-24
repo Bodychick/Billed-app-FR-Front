@@ -15,14 +15,37 @@ export default class NewBill {
     this.billId = null
     new Logout({ document, localStorage, onNavigate })
   }
+  
   handleChangeFile = e => {
     e.preventDefault()
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const fileInput = this.document.querySelector(`input[data-testid="file"]`);
+    const selectedFile = fileInput.files[0];
+    console.log(selectedFile)
+
+    if (!selectedFile) {
+      console.error("Veuillez sélectionner un fichier.");
+      return;
+    }
+
+    // Vérifier l'extension du fichier
+    const allowedExtensions = ["jpg", "jpeg", "png"];
+    const fileName2 = selectedFile.name.toLowerCase();
+    const fileExtension = fileName2.split(".").pop();
+
+    if (!allowedExtensions.includes(fileExtension)) {
+      console.error("Veuillez sélectionner un fichier avec une extension .jpg, .jpeg ou .png.");
+      // Réinitialiser l'input de fichier
+      fileInput.value = "";
+      return;
+    }
+
     const filePath = e.target.value.split(/\\/g)
+    console.log(filePath)
     const fileName = filePath[filePath.length-1]
+    console.log(fileName)
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
-    formData.append('file', file)
+    formData.append('file', selectedFile)
     formData.append('email', email)
 
     this.store
@@ -40,6 +63,7 @@ export default class NewBill {
         this.fileName = fileName
       }).catch(error => console.error(error))
   }
+
   handleSubmit = e => {
     e.preventDefault()
     console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)

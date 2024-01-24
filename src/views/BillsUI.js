@@ -19,12 +19,17 @@ const row = (bill) => {
     `)
   }
 
-const rows = (data) => {
-  return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
-}
+  const rows = (data) => {
+    console.log(data);
+    
+    // Tri des factures par ordre décroissant (plus récentes d'abord) //correctif
+    const sortedData = data && data.length ? data.sort((a, b) => new Date(b.date) - new Date(a.date)) : [];
+    console.log(sortedData);
+    return sortedData.map(bill => row(bill)).join("");
+  };
 
 export default ({ data: bills, loading, error }) => {
-  
+  console.log(bills)
   const modal = () => (`
     <div class="modal fade" id="modaleFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">

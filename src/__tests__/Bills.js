@@ -5,7 +5,7 @@
 import {screen, waitFor} from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
-import { ROUTES_PATH} from "../constants/routes.js";
+import { ROUTES,ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
 
 import router from "../app/Router.js";
@@ -26,14 +26,50 @@ describe("Given I am connected as an employee", () => {
       await waitFor(() => screen.getByTestId('icon-window'))
       const windowIcon = screen.getByTestId('icon-window')
       //to-do write expect expression
+      expect(windowIcon).toHaveClass("active-icon"); 
 
     })
-    test("Then bills should be ordered from earliest to latest", () => {
+    test("Then bills should be ordered from latest to earliest", () => {
       document.body.innerHTML = BillsUI({ data: bills })
       const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
-      const antiChrono = (a, b) => ((a < b) ? 1 : -1)
+      const antiChrono = (a, b) => ((a - b) ? -1 : 1)  
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
     })
+
+    describe("When I click on New Bill Button", () => {
+      test("Then I should be sent on New Bill form", () => {
+        const onNavigate = pathname => {
+          document.body.innerHTML = ROUTES({ pathname });
+        };
+
+        Object.defineProperty(window, "localStorage", {
+          value: localStorageMock,
+        });
+        window.localStorage.setItem(
+          "user",
+          JSON.stringify({
+            type: "Employee",
+          })
+        );
+        const bills = new Bills({
+          document,
+          onNavigate,
+          store: mockedStore,
+          localStorage: window.localStorage,
+        });
+
+        document.body.innerHTML = BillsUI({ data: bills });
+
+        const buttonNewBill = screen.getByRole("button", {
+          name: /nouvelle note de frais/i,
+        });
+        expect(buttonNewBill).toBeTruthy();
+        const handleClickNewBill = jest.fn(bills.handleClickNewBill);
+        buttonNewBill.addEventListener("click", handleClickNewBill);
+        userEvent.click(buttonNewBill);
+        expect(handleClickNewBill).toHaveBeenCalled();
+      });
+    });
   })
 })
