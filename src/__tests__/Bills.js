@@ -22,7 +22,15 @@ describe("Given I am connected as an Employee", () => {
 				expect(screen.getAllByText("Mes notes de frais")).toBeTruthy();
 				expect(screen.getByTestId("btn-new-bill")).toBeTruthy();
 			});
+		})
+		describe("When I am on Bills page, and there are no bills", () => {
+			it("Then, no bills should be shown", () => {
+				document.body.innerHTML = BillsUI({ data: [] });
+				const bill = screen.queryByTestId("bill");
+				expect(bill).toBeNull();
+			});
 		});
+
 		describe("When I am on Bills page, there are bills", () => {
 			it("should display a table of bills", () => {
 				document.body.innerHTML = BillsUI({ data: bills });
@@ -106,6 +114,32 @@ describe("Given I am connected as Employee and I am on Bill page, there are a ne
 			document.body.appendChild(root);
 			router();
 		});
+
+		
+		describe("When I am on Bills page, but it is loading", () => {
+			it("Then, Loading page should be rendered", () => {
+				document.body.innerHTML = BillsUI({ loading: true });
+				expect(screen.getAllByText("Loading...")).toBeTruthy();
+			});
+		});
+		describe("When I am on Dashboard page but back-end send an error message", () => {
+			it("Then, Error page should be rendered", () => {
+				document.body.innerHTML = BillsUI({ error: "some error message" });
+				expect(screen.getAllByText("Erreur")).toBeTruthy();
+			});
+		});
+
+		it('fetches bills from mock API GET', async () => {
+			// spy on Firebase Mock
+			const getSpy = jest.spyOn(firebase, 'get');
+	
+			// get bills
+			const bills = await firebase.get();
+	
+			// expected results
+			expect(getSpy).toHaveBeenCalledTimes(1);
+			expect(bills.data.length).toBe(4);
+		  });
 
 		it("Then, fetches bills from an API and fails with 404 message error", async () => {
 			mockStore.bills.mockImplementationOnce(() => {
