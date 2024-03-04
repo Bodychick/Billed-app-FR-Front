@@ -42,6 +42,7 @@ describe("Given I am connected as an employee", () => {
 			expect(submitBtn).toBeTruthy();
 		});
 	});
+	
 	describe("When I am on NewBill page, and a user upload a file", () => {
 		it("Then, the file name should be correctly displayed", () => {
 			window.localStorage.setItem(
