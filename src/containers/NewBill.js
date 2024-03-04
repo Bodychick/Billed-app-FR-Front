@@ -20,7 +20,7 @@ export default class NewBill {
     e.preventDefault()
     const fileInput = this.document.querySelector(`input[data-testid="file"]`);
     const selectedFile = fileInput.files[0];
-    console.log(selectedFile)
+    console.log(selectedFile);
 
     if (!selectedFile) {
       console.error("Veuillez sélectionner un fichier.");

@@ -31,6 +31,7 @@ describe("Given I am connected as an Employee", () => {
 			});
 		});
 
+		//ERREUR ICI
 		describe("When I am on Bills page, there are bills", () => {
 			it("should display a table of bills", () => {
 				document.body.innerHTML = BillsUI({ data: bills });
@@ -54,6 +55,7 @@ describe("Given I am connected as an Employee", () => {
 				expect(iconEye.textContent).not.toBeNull();
 			});
 		});
+
 		describe("When I am on Bills page and the bills are displayed", () => {
 			it("should be ordered from the earliest to the latest", () => {
 				document.body.innerHTML = BillsUI({ data: bills });
@@ -63,6 +65,7 @@ describe("Given I am connected as an Employee", () => {
 				expect(dates).toEqual(datesSorted);
 			});
 		});
+		
 	});
 
 describe("Given I am connected as Employee and I am on Bill page, there are a newBill button", () => {
@@ -96,6 +99,8 @@ describe("Given I am connected as Employee and I am on Bill page, there are a ne
 	});
 });
 
+
+// 1 Erreur là dedans
 // Test d'intégration GET
 	describe("When I navigate to Bills Dashboard", () => {
     //Avant de lancer le test on fait ça : 
@@ -122,6 +127,7 @@ describe("Given I am connected as Employee and I am on Bill page, there are a ne
 				expect(screen.getAllByText("Loading...")).toBeTruthy();
 			});
 		});
+		
 		describe("When I am on Dashboard page but back-end send an error message", () => {
 			it("Then, Error page should be rendered", () => {
 				document.body.innerHTML = BillsUI({ error: "some error message" });
@@ -129,6 +135,7 @@ describe("Given I am connected as Employee and I am on Bill page, there are a ne
 			});
 		});
 
+		//ERREUR ICI
 		it('fetches bills from mock API GET', async () => {
 			// spy on Firebase Mock
 			const getSpy = jest.spyOn(firebase, 'get');

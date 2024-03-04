@@ -42,7 +42,8 @@ describe("Given I am connected as an employee", () => {
 			expect(submitBtn).toBeTruthy();
 		});
 	});
-	
+
+	//ERREUR
 	describe("When I am on NewBill page, and a user upload a file", () => {
 		it("Then, the file name should be correctly displayed", () => {
 			window.localStorage.setItem(
@@ -88,6 +89,8 @@ describe("Given I am connected as an employee", () => {
 			expect(newBill.formData).not.toBe(null);
 		});
 	});
+	
+	//ERREUR
 	describe("When I am on NewBill page, the user upload a file", () => {
 		it("Then, the file name should not be displayed", () => {
 			window.localStorage.setItem(
@@ -127,6 +130,7 @@ describe("Given I am connected as an employee", () => {
 		});
 	});
 
+	//ERREUR
 	describe("When I am on NewBill page, and the user click on submit button", () => {
 		test("Then, the handleSubmit function should be called", () => {
 			window.localStorage.setItem(
@@ -165,6 +169,7 @@ describe("Given I am connected as an employee", () => {
 	});
 });
 
+//ERREUR x3
 //POST
 describe("When I navigate to Dashboard employee", () => {
 	describe("Given I am a user connected as Employee, and a user post a newBill", () => {
