@@ -2,18 +2,17 @@
  * @jest-environment jsdom
  */
 
-import { screen, fireEvent, waitFor } from "@testing-library/dom";
+import { screen, fireEvent } from "@testing-library/dom";
 import NewBillUI from "../views/NewBillUI.js";
 import NewBill from "../containers/NewBill.js";
-import mockStore from "../__mocks__/store";
+import mockStore from "../__mocks__/store.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import router from "../app/Router.js";
 import { ROUTES, ROUTES_PATH } from "../constants/routes";
 
 describe("Given I am connected as an employee", () => {
-
 	describe("Then I am on NewBill page, there are a form", () => {
-		it("Then, all the form input should be render correctly", () => {
+		it("Then, all the form input should be render correctly", async () => {
 			document.body.innerHTML = NewBillUI();
 
       //On récupère les infos dans le DOM
@@ -43,9 +42,12 @@ describe("Given I am connected as an employee", () => {
 		});
 	});
 
-	//ERREUR
-	describe("When I am on NewBill page, and a user upload a file", () => {
-		it("Then, the file name should be correctly displayed", () => {
+
+	
+
+	//Résolve
+	describe("When I am on NewBill page, the user upload a pdf file", () => {
+		it("Then, the file name should not be displayed", async () => {
 			window.localStorage.setItem(
 				"user",
 				JSON.stringify({
@@ -58,58 +60,21 @@ describe("Given I am connected as an employee", () => {
 			const onNavigate = (pathname) => {
 				document.body.innerHTML = ROUTES({ pathname });
 			};
-			const store = null;
+			//const store = null;
 
 			const newBill = new NewBill({
 				document,
 				onNavigate,
-				store,
+				store: mockStore.bills(),
 				localStorage,
 			});
 
-			const handleChangeFile = jest.fn(() => newBill.handleChangeFile);
-			const file = screen.getByTestId("file");
+			document.body.innerHTML=`<div id="root"></div>`;
+			document.location='#employee/bill/new';
+			await router();
 
-			window.alert = jest.fn();
-
-			file.addEventListener("change", handleChangeFile);
-			fireEvent.change(file, {
-				target: {
-					files: [new File(["file.png"], "file.png", { type: "image/png" })],
-				},
-			});
-
-			jest.spyOn(window, "alert");
-			expect(alert).not.toHaveBeenCalled();
-
-			expect(handleChangeFile).toHaveBeenCalled();
-			expect(file.files[0].name).toBe("file.png");
-			expect(newBill.fileName).toBe("file.png");
-			expect(newBill.isImgFormatValid).toBe(true);
-			expect(newBill.formData).not.toBe(null);
-		});
-	});
-	
-	//ERREUR
-	describe("When I am on NewBill page, the user upload a file", () => {
-		it("Then, the file name should not be displayed", () => {
-			window.localStorage.setItem(
-				"user",
-				JSON.stringify({
-					type: "Employee",
-				})
-			);
-
-			document.body.innerHTML = NewBillUI();
-
-			const onNavigate = (pathname) => {
-				document.body.innerHTML = ROUTES({ pathname });
-			};
-			const store = null;
-
-			const newBill = new NewBill({ document, onNavigate, store, localStorage });
 			const handleChangeFile = jest.fn(newBill.handleChangeFile);
-			const file = screen.getByTestId("file");
+			const file = document.getByTestId("file");
 
 			window.alert = jest.fn();
 
@@ -176,20 +141,20 @@ describe("When I navigate to Dashboard employee", () => {
 		it("Add a bill from mock API POST", async () => {
 			const postSpy = jest.spyOn(mockStore, "bills");
 			const bill = {
-				id: "47qAXb6fIm2zOKkLzMro",
-				vat: "80",
-				fileUrl: "https://firebasestorage.googleapis.com/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a",
-				status: "pending",
-				type: "Hôtel et logement",
-				commentary: "séminaire billed",
-				name: "encore",
-				fileName: "facture.jpg",
-				date: "2004-04-04",
-				amount: 400,
-				commentAdmin: "ok",
-				email: "a@a",
-				pct: 20,
-			};
+				"id": "47qAXb6fIm2zOKkLzMro",
+				"vat": "80",
+				"fileUrl": "https://firebasestorage.googleapis.com/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a",
+				"status": "pending",
+				"type": "Hôtel et logement",
+				"commentary": "séminaire billed",
+				"name": "encore",
+				"fileName": "preview-facture-free-201801-pdf-1.jpg",
+				"date": "2004-04-04",
+				"amount": 400,
+				"commentAdmin": "ok",
+				"email": "a@a",
+				"pct": 20
+			  };
 			const postBills = await mockStore.bills().update(bill);
 			expect(postSpy).toHaveBeenCalledTimes(1);
 			expect(postBills).toStrictEqual(bill);

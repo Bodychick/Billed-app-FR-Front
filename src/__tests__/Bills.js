@@ -11,6 +11,8 @@ import { localStorageMock } from "../__mocks__/localStorage.js";
 import mockStore from "../__mocks__/store";
 import { bills } from "../fixtures/bills";
 import router from "../app/Router.js";
+import firebase from 'firebase/app';
+import 'firebase/firestore'; 
 
 jest.mock("../app/store", () => mockStore);
 
@@ -36,24 +38,20 @@ describe("Given I am connected as an Employee", () => {
 			it("should display a table of bills", () => {
 				document.body.innerHTML = BillsUI({ data: bills });
 
-        //Récupération des éléments du DOM en fonction de leur data-testid
-				const bill = screen.getAllByTestId("bill");
-				const type = screen.getAllByTestId("type")[0];
-				const name = screen.getAllByTestId("name")[0];
-				const date = screen.getAllByTestId("date")[0];
-				const amount = screen.getAllByTestId("amount")[0];
-				const status = screen.getAllByTestId("status")[0];
-				const iconEye = screen.getAllByTestId("icon-eye")[0];
+			// Récupération des éléments du DOM en fonction de leur data-testid
+			const type = document.querySelector("[data-testid='type']");
+			const name = document.querySelector("[data-testid='name']");
+			const date = document.querySelector("[data-testid='date']");
+			const amount = document.querySelector("[data-testid='amount']");
+			const status = document.querySelector("[data-testid='status']");
 
-        //Test si les champs récupérés sont remplis
-				expect(bill.length).not.toBeNull();
-				expect(type.textContent).not.toBeNull();
-				expect(name.textContent).not.toBeNull();
-				expect(date.textContent).not.toBeNull();
-				expect(amount.textContent).not.toBeNull();
-				expect(status.textContent).not.toBeNull();
-				expect(iconEye.textContent).not.toBeNull();
-			});
+			// Test si les champs récupérés sont remplis
+			expect(type.textContent).toBe(bills[0].type);
+			expect(name.textContent).toBe(bills[0].name);
+			expect(date.textContent).toBe(bills[0].date);
+			expect(amount.textContent).toBe(bills[0].amount + " €");
+			expect(status.textContent).toBe(bills[0].status);
+				});
 		});
 
 		describe("When I am on Bills page and the bills are displayed", () => {
@@ -136,16 +134,16 @@ describe("Given I am connected as Employee and I am on Bill page, there are a ne
 		});
 
 		//ERREUR ICI
-		it('fetches bills from mock API GET', async () => {
-			// spy on Firebase Mock
-			const getSpy = jest.spyOn(firebase, 'get');
-	
-			// get bills
-			const bills = await firebase.get();
-	
-			// expected results
-			expect(getSpy).toHaveBeenCalledTimes(1);
-			expect(bills.data.length).toBe(4);
+		it('should fetch bills from the mock API', async () => {
+			// Spy sur la méthode list du mockStore
+			const listSpy = jest.spyOn(mockStore.bills(), 'list');
+		
+			// Appeler la méthode pour récupérer les factures
+			const bills = await mockStore.bills().list();
+		
+			// Résultats attendus
+			expect(listSpy).toHaveBeenCalledTimes(1); 
+			expect(bills.length).toBe(4); 
 		  });
 
 		it("Then, fetches bills from an API and fails with 404 message error", async () => {
