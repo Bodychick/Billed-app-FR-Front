@@ -33,7 +33,9 @@ export default class {
         .bills()
         .list()
         .then(snapshot => {
-          const bills = snapshot.map(doc => {
+	        const sortedBills = (a, b) => (a.date < b.date ? 1 : -1)
+          const bills = snapshot.sort(sortedBills)
+		  .map(doc => {
             try {
               return {
                 ...doc,
@@ -53,10 +55,10 @@ export default class {
           });
   
           // Trier les factures par ordre du plus récent au plus ancien
-          const sortedBills = bills.sort((a, b) => new Date(b.date) - new Date(a.date));
+          //const sortedBills = bills.sort((a, b) => new Date(b.date) - new Date(a.date));
   
-          console.log('length', sortedBills.length);
-          return sortedBills;
+          console.log('length', bills.length);
+          return bills;
         });
     }
   };

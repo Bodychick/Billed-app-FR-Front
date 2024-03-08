@@ -142,3 +142,8 @@ Un screenshot du rapport de couverture Jest.
 ❒ Il permet de tester manuellement le fonctionnement de l’appel API get bills .
 ❒ Il permet de tester manuellement le fonctionnement de l’appel API post new bill .
 ❒ Il reprend la même forme que le document E2E du parcours administrateur (Scénario n°i, instructions “Given”, “When” et “Then”).
+
+
+https://github.com/rjm62/Billed_app
+https://github.com/Seb59000/bill-app
+https://github.com/mohaali77/P9-JS-React
